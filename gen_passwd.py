@@ -2,6 +2,12 @@
 
 #V0.0 relies on long sentences rather than special characters and numbers
 
+## BUGS
+## In the interspersed function, the instructions to insert numbers inbetween words does not work
+## This needs to be fixed
+##
+## Not a bug, but support for special characters still needs to be built in
+
 ###################################
 #####Written by Michael Cooney#####
 ############Jan 3 2018#############
@@ -51,18 +57,15 @@ numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
 #allows us to find name of calling function
 getframe_expr = "sys._getframe({}).f_code.co_name"
 
-def use_numbers(list):
-    if "-n" in terminal_args:
-        #choose 1 or 2; this will determine if the numbers replace letters or are interspersed
-        num = randint(1, 2)
-        if num == 1:
-            #interspersed
-            return 1
-        else:
-            #replace letters
-            return 2
+def use_numbers():
+    #choose 1 or 2; this will determine if the numbers replace letters or are interspersed
+    num = randint(1, 2)
+    if num == 1:
+        #interspersed
+        return 1
     else:
-        return False
+        #replace letters
+        return 2
             
 
 def interspersed(passwd):
@@ -74,8 +77,10 @@ def interspersed(passwd):
         passwd = passwd.split()
         for i in range(1, num2):
             if any (char in "ABCDEFGHIJKLMNOPQRSTUVWXYV1234567890" for char in passwd):
-                passwd.insert(char, randint(1,10))
-                return passwd
+                passwd.insert(char, str(randint(1,10)))
+        debug = "DEBUG"
+        passwd = "".join(passwd)
+        return passwd
     elif num == 2:
         #before or after the password
         num2 = randint(1,2)
@@ -84,16 +89,18 @@ def interspersed(passwd):
             passwd = passwd.split()
             num3 = randint(1,5)
             for i in range(1, num3):
-                passwd.insert(0, randint(1,10))
-                return passwd
+                passwd.insert(0, str(randint(1,10)))
+            passwd = "".join(passwd)
+            return passwd
         elif num2 == 2:
             #after word
             passwd = passwd.split()
             length = len(passwd)
             num3 = randint(1,5)
             for i in range(1, num3):
-                passwd.insert(length, randint(1,10)) 
-                return passwd
+                passwd.insert(length, str(randint(1,10)))
+            passwd = "".join(passwd)
+            return passwd
 
 def replace_letters(passwd):
     #replace letters inside of words.
@@ -104,23 +111,31 @@ def replace_letters(passwd):
             passwd[passwd.index(char)] = "0"
         elif char == "i" or char == "I":
             passwd[passwd.index(char)] = "1"
+    passwd = "".join(passwd)
     return passwd
             
 def get_passwd(color, animal, end):
-    numbers = use_numbers(terminal_args)
+    #numbers = use_numbers(terminal_args)
     color_choice = choice(color)
     animal_choice = choice(animal)
     end_choice = choice(end)
     passwd = color_choice + animal_choice + end_choice
     #print(color_choice + animal_choice + end_choice)
-    if numbers == 1:
-        new_passwd = interspersed(passwd)
-        print(new_passwd)
-    elif numbers == 2:
-        new_passwd = replace_letters(passwd)
-        print(new_passwd)
+    if "-n" in terminal_args:
+        numbers = use_numbers()
+        if numbers == 1:
+            new_passwd = interspersed(passwd)
+            print(new_passwd)
+        elif numbers == 2:
+            new_passwd = replace_letters(passwd)
+            print(new_passwd)
     else:
         print(passwd)
-        
-for i in range(1, 10):
+
+
+def start():
+    for i in range(1, 10):
         get_passwd(colors, animals, ends)
+        print()
+
+start()
