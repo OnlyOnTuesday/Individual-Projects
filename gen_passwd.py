@@ -52,7 +52,8 @@ special_chars = ["!", "@", "#", "$", "%", "^", "&", "*", " ", "+", "=", "-", "_"
 # add number support.  This will either add a series of numbers to the beginning or end of password,
 # or it will replace certain characters with numbers (such as "o" with "0").  The choice will be
 # made by the program based on a random outcome.
-numbers = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"]
+caps = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", \
+        "S", "T", "U", "V", "W", "X", "Y", "Z"]
 
 #allows us to find name of calling function
 getframe_expr = "sys._getframe({}).f_code.co_name"
@@ -76,10 +77,8 @@ def interspersed(passwd):
         num2 = randint(1, 5)
         passwd = passwd.split()
         for i in range(1, num2):
-            if any (char in "ABCDEFGHIJKLMNOPQRSTUVWXYV1234567890" for char in passwd):
-                passwd.insert(char, str(randint(1,10)))
-        debug = "DEBUG"
-        passwd = "".join(passwd)
+            passwd.insert(randint(0, len(passwd)), str(randint(1, 9)))
+        passwd="".join(passwd)
         return passwd
     elif num == 2:
         #before or after the password
@@ -111,6 +110,9 @@ def replace_letters(passwd):
             passwd[passwd.index(char)] = "0"
         elif char == "i" or char == "I":
             passwd[passwd.index(char)] = "1"
+    #will first include spaces, so we have to split it and rejoin it again
+    passwd = "".join(passwd)
+    passwd = passwd.split()
     passwd = "".join(passwd)
     return passwd
             
@@ -119,8 +121,8 @@ def get_passwd(color, animal, end):
     color_choice = choice(color)
     animal_choice = choice(animal)
     end_choice = choice(end)
-    passwd = color_choice + animal_choice + end_choice
-    #print(color_choice + animal_choice + end_choice)
+    #spaces added in case the program desires to add numbers inbetween the words
+    passwd = color_choice + " " + animal_choice + " " + end_choice
     if "-n" in terminal_args:
         numbers = use_numbers()
         if numbers == 1:
@@ -130,6 +132,9 @@ def get_passwd(color, animal, end):
             new_passwd = replace_letters(passwd)
             print(new_passwd)
     else:
+        #removes the spaces from the password
+        passwd = passwd.split()
+        passwd = "".join(passwd)
         print(passwd)
 
 
