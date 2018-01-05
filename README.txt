@@ -11,4 +11,4 @@ With the "-n" option put in on the terminal, it will add numbers, randomly decid
 Support will be added soon for passwords with special characters.
 
 BUGS:
-The generator does not seem to put numbers inbetween words.
+Stay tuned for special character support

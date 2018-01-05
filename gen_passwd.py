@@ -17,6 +17,8 @@
 from random import choice, randint
 import sys
 
+DEBUG = False
+
 terminal_args = list(sys.argv)
 
 # Colors will be oraganized in the following order:
@@ -60,46 +62,60 @@ getframe_expr = "sys._getframe({}).f_code.co_name"
 
 def use_numbers():
     #choose 1 or 2; this will determine if the numbers replace letters or are interspersed
-    num = randint(1, 2)
+    if DEBUG == True:
+        num = 1
+    else:
+        num = randint(1, 2)
     if num == 1:
         #interspersed
         return 1
     else:
         #replace letters
         return 2
-            
 
 def interspersed(passwd):
-    #will numbers appear at beginning/end or inbetween words, or will they replace letters
-    num = randint(1,2)
+    if DEBUG == True:
+        num = 2
+    else:
+        num = randint(1, 2)
     if num == 1:
-        #inbetween words
-        num2 = randint(1, 5)
-        passwd = passwd.split()
-        for i in range(1, num2):
-            passwd.insert(randint(0, len(passwd)), str(randint(1, 9)))
-        passwd="".join(passwd)
+        passwd = inbetween(passwd)
         return passwd
-    elif num == 2:
-        #before or after the password
-        num2 = randint(1,2)
+    else:
+        if DEBUG == True:
+            num2 = 1
+        else:
+            num2 = randint(1,2)
         if num2 == 1:
-            #before word
-            passwd = passwd.split()
-            num3 = randint(1,5)
-            for i in range(1, num3):
-                passwd.insert(0, str(randint(1,10)))
-            passwd = "".join(passwd)
+            passwd = before(passwd)
             return passwd
-        elif num2 == 2:
-            #after word
-            passwd = passwd.split()
-            length = len(passwd)
-            num3 = randint(1,5)
-            for i in range(1, num3):
-                passwd.insert(length, str(randint(1,10)))
-            passwd = "".join(passwd)
+        else:
+            passwd = after(passwd)
             return passwd
+
+def inbetween(passwd):
+    num = randint(2, 5)
+    passwd = passwd.split()
+    for i in range(1, num):
+        passwd.insert(randint(1, len(passwd)-1), str(randint(1, 9)))
+    passwd = "".join(passwd)
+    return passwd
+
+def before(passwd):
+    passwd = passwd.split()
+    num = randint(2, 5)
+    for i in range(1, num):
+        passwd.insert(0, str(randint(1, 9)))
+    passwd = "".join(passwd)
+    return passwd
+
+def after(passwd):
+    passwd = passwd.split()
+    num = randint(2, 5)
+    for i in range(1, num):
+        passwd.insert(len(passwd), str(randint(1, 9)))
+    passwd = "".join(passwd)
+    return passwd
 
 def replace_letters(passwd):
     #replace letters inside of words.
