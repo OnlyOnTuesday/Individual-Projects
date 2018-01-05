@@ -2,11 +2,6 @@
 
 #V0.0 relies on long sentences rather than special characters and numbers
 
-## BUGS
-## In the interspersed function, the instructions to insert numbers inbetween words does not work
-## This needs to be fixed
-##
-## Not a bug, but support for special characters still needs to be built in
 
 ###################################
 #####Written by Michael Cooney#####
