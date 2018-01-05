@@ -1,7 +1,5 @@
 #A password generator written in Python
 
-#V0.0 relies on long sentences rather than special characters and numbers
-
 
 ###################################
 #####Written by Michael Cooney#####
@@ -46,8 +44,6 @@ ends = ["AreAttractive", "AreBald", "LikeCleanliness", "AreDazzling", "AreDrab",
 special_chars = ["!", "@", "#", "$", "%", "^", "&", "*", " ", "+", "=", "-", "_", ",", ".", "~", \
                  "{", "}", "[", "]", "(", ")"]
 
-#allows us to find name of calling function
-getframe_expr = "sys._getframe({}).f_code.co_name"
 
 ##############################################################################
 #This section provides the ability to create passwords with special characters
@@ -64,7 +60,6 @@ def use_special_chars():
         return 1
     else:
         #before or after words
-        #decide before or after
         if DEBUG == True:
             num2 = 1
         else:
@@ -87,7 +82,7 @@ def chars_inbetween(passwd):
     return passwd    
 
 def chars_before(passwd):
-    #see inbetween() for why randint does not start at 1
+    #see chars_inbetween() for why randint does not start at 1
     num = randint(2, 5)
     passwd = passwd.split()
     for i in range(1, num):
@@ -96,7 +91,7 @@ def chars_before(passwd):
     return passwd
 
 def chars_after(passwd):
-    #see inbetween() for why randint does not start at 1
+    #see chars_inbetween() for why randint does not start at 1
     num = randint(2, 5)
     passwd = passwd.split()
     for i in range(1, num):
@@ -151,7 +146,7 @@ def numbers_inbetween(passwd):
     return passwd
 
 def numbers_before(passwd):
-    #see inbetween() for why randint does not start at 1
+    #see numbers_inbetween() for why randint does not start at 1
     num = randint(2, 5)
     passwd = passwd.split()
     for i in range(1, num):
@@ -160,7 +155,7 @@ def numbers_before(passwd):
     return passwd
 
 def numbers_after(passwd):
-    #see inbetween() for why randint does not start at 1
+    #see numbers_inbetween() for why randint does not start at 1
     num = randint(2, 5)
     passwd = passwd.split()
     for i in range(1, num):
