@@ -51,15 +51,67 @@ ends = ["AreAttractive", "AreBald", "LikeCleanliness", "AreDazzling", "AreDrab",
 special_chars = ["!", "@", "#", "$", "%", "^", "&", "*", " ", "+", "=", "-", "_", ",", ".", "~", \
                  "{", "}", "[", "]", "(", ")"]
 
-# add number support.  This will either add a series of numbers to the beginning or end of password,
-# or it will replace certain characters with numbers (such as "o" with "0").  The choice will be
-# made by the program based on a random outcome.
-caps = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", \
-        "S", "T", "U", "V", "W", "X", "Y", "Z"]
-
 #allows us to find name of calling function
 getframe_expr = "sys._getframe({}).f_code.co_name"
 
+##############################################################################
+#This section provides the ability to create passwords with special characters
+##############################################################################
+
+def use_special_chars():
+    #choose 1 or 2; this will determine if the chars come before, after, or occur inbetween words
+    if DEBUG == True:
+        num = 1
+    else:
+        num = randint(1,2)
+    if num == 1:
+        #inbetween letters
+        return 1
+    else:
+        #before or after words
+        #decide before or after
+        if DEBUG == True:
+            num2 = 1
+        else:
+            num2 = randint(1,2)
+        if num2 == 1:
+            #before
+            return 2
+        else:
+            #after
+            return 3
+
+def chars_inbetween(passwd):
+    #the randomly generated nums do not include 1 because the range function will not do anything if
+    #there is no increment
+    num = randint(2, 5)
+    passwd = passwd.split()
+    for i in range(1, num):
+        passwd.insert(randint(1, len(passwd)-1), choice(special_chars))
+    passwd = "".join(passwd)
+    return passwd    
+
+def chars_before(passwd):
+    #see inbetween() for why randint does not start at 1
+    num = randint(2, 5)
+    passwd = passwd.split()
+    for i in range(1, num):
+        passwd.insert(0, choice(special_chars))
+    passwd = "".join(passwd)
+    return passwd
+
+def chars_after(passwd):
+    #see inbetween() for why randint does not start at 1
+    num = randint(2, 5)
+    passwd = passwd.split()
+    for i in range(1, num):
+        passwd.insert(len(passwd), choice(special_chars))
+    passwd = "".join(passwd)
+    return passwd
+
+###################################################################
+#This section provides the ability to create passwords with numbers
+###################################################################
 def use_numbers():
     #choose 1 or 2; this will determine if the numbers replace letters or are interspersed
     if DEBUG == True:
@@ -79,7 +131,7 @@ def interspersed(passwd):
     else:
         num = randint(1, 2)
     if num == 1:
-        passwd = inbetween(passwd)
+        passwd = numbers_inbetween(passwd)
         return passwd
     else:
         if DEBUG == True:
@@ -87,13 +139,15 @@ def interspersed(passwd):
         else:
             num2 = randint(1,2)
         if num2 == 1:
-            passwd = before(passwd)
+            passwd = numbers_before(passwd)
             return passwd
         else:
-            passwd = after(passwd)
+            passwd = numbers_after(passwd)
             return passwd
 
-def inbetween(passwd):
+def numbers_inbetween(passwd):
+    #the randomly generated nums do not include 1 because the range function will not do anything if
+    #there is no increment
     num = randint(2, 5)
     passwd = passwd.split()
     for i in range(1, num):
@@ -101,17 +155,19 @@ def inbetween(passwd):
     passwd = "".join(passwd)
     return passwd
 
-def before(passwd):
-    passwd = passwd.split()
+def numbers_before(passwd):
+    #see inbetween() for why randint does not start at 1
     num = randint(2, 5)
+    passwd = passwd.split()
     for i in range(1, num):
         passwd.insert(0, str(randint(1, 9)))
     passwd = "".join(passwd)
     return passwd
 
-def after(passwd):
-    passwd = passwd.split()
+def numbers_after(passwd):
+    #see inbetween() for why randint does not start at 1
     num = randint(2, 5)
+    passwd = passwd.split()
     for i in range(1, num):
         passwd.insert(len(passwd), str(randint(1, 9)))
     passwd = "".join(passwd)
@@ -131,9 +187,13 @@ def replace_letters(passwd):
     passwd = passwd.split()
     passwd = "".join(passwd)
     return passwd
-            
+
+########################################################################
+#This section provides the basic functionality of the password generator
+#It also initiates the creation of passwords containing numbers and
+#special characters
+########################################################################
 def get_passwd(color, animal, end):
-    #numbers = use_numbers(terminal_args)
     color_choice = choice(color)
     animal_choice = choice(animal)
     end_choice = choice(end)
@@ -147,6 +207,17 @@ def get_passwd(color, animal, end):
         elif numbers == 2:
             new_passwd = replace_letters(passwd)
             print(new_passwd)
+    elif "-s" in terminal_args:
+        use_chars = use_special_chars()
+        if use_chars == 1:
+            new_passwd = chars_inbetween(passwd)
+            print(new_passwd)
+        elif use_chars == 2:
+            new_passwd = chars_before(passwd)
+            print(new_passwd)
+        else:
+            new_passwd = chars_after(passwd)
+            print(new_passwd)
     else:
         #removes the spaces from the password
         passwd = passwd.split()
@@ -154,9 +225,7 @@ def get_passwd(color, animal, end):
         print(passwd)
 
 
-def start():
-    for i in range(1, 10):
-        get_passwd(colors, animals, ends)
-        print()
 
-start()
+for i in range(1, 10):
+    get_passwd(colors, animals, ends)
+    print()
