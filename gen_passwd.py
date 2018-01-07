@@ -178,18 +178,29 @@ def replace_letters(passwd):
     passwd = "".join(passwd)
     return passwd
 
-########################################################################
-#This section provides the basic functionality of the password generator
-#It also initiates the creation of passwords containing numbers and
-#special characters
-########################################################################
-def get_passwd(color, animal, end):
-    color_choice = choice(color)
-    animal_choice = choice(animal)
-    end_choice = choice(end)
-    #spaces added in case the program desires to add numbers inbetween the words
-    passwd = color_choice + " " + animal_choice + " " + end_choice
-    if "-n" in terminal_args:
+############################################
+#This section will provide the "walkthrough"
+############################################
+def walkthrough():
+    print("What type of password would you like?")
+    print("Enter the number of the option you would like to select.")
+    print("    1.) Text only")
+    print("    2.) Text and numbers")
+    print("    3.) Text and special characters")
+    print()
+    answer = input()
+    for i in range(1, 10):
+        passwd = make_passwd()
+        get_passwd_walkthrough(passwd, answer)
+        print()
+
+def get_passwd_walkthrough(passwd, answer):
+    #same as get_passwd(); used to prevent the menu dialogue from appearing each time the program loops
+    if answer == "1":
+        passwd = passwd.split()
+        passwd = "".join(passwd)
+        print(passwd)
+    elif answer == "2":
         numbers = use_numbers()
         if numbers == 1:
             new_passwd = interspersed(passwd)
@@ -197,7 +208,7 @@ def get_passwd(color, animal, end):
         elif numbers == 2:
             new_passwd = replace_letters(passwd)
             print(new_passwd)
-    elif "-s" in terminal_args:
+    elif answer == "3":
         use_chars = use_special_chars()
         if use_chars == 1:
             new_passwd = chars_inbetween(passwd)
@@ -209,13 +220,89 @@ def get_passwd(color, animal, end):
             new_passwd = chars_after(passwd)
             print(new_passwd)
     else:
-        #removes the spaces from the password
-        passwd = passwd.split()
-        passwd = "".join(passwd)
-        print(passwd)
+        print("That option is not recognizable.  Please make sure you only typed in the number and try again.")
 
 
 
-for i in range(1, 10):
-    get_passwd(colors, animals, ends)
+##############################################################
+#This section will provide the list of available shell options
+##############################################################
+def help():
+    print("Shell Options:")
+    print("    Default: No arguments: ------------> The program will display a user-friendly menu to choose from")
+    print("    -d --------------------------------> The program will print text-only passwords")
+    print("    -n --------------------------------> The program will combine text and numbers")
+    print("    -s --------------------------------> The program will combine text and special characters")
+    print("    -h --------------------------------> The program will display this help text")
     print()
+
+
+########################################################################
+#This section provides the basic functionality of the password generator
+#It also initiates the creation of passwords containing numbers and
+#special characters
+########################################################################
+def get_passwd_nums(passwd):
+    numbers = use_numbers()
+    if numbers == 1:
+        new_passwd = interspersed(passwd)
+        print(new_passwd)
+    elif numbers == 2:
+        new_passwd = replace_letters(passwd)
+        print(new_passwd)
+
+def get_passwd_chars(passwd):
+    use_chars = use_special_chars()
+    if use_chars == 1:
+        new_passwd = chars_inbetween(passwd)
+        print(new_passwd)
+    elif use_chars == 2:
+        new_passwd = chars_before(passwd)
+        print(new_passwd)
+    else:
+        new_passwd = chars_after(passwd)
+        print(new_passwd)
+
+def get_passwd_default(passwd):
+    #removes the spaces from the password
+    passwd = passwd.split()
+    passwd = "".join(passwd)
+    print(passwd)
+
+def make_passwd():
+    color_choice = choice(colors)
+    animal_choice = choice(animals)
+    end_choice = choice(ends)
+    #spaces added in case the program desires to add numbers inbetween the words
+    passwd = color_choice + " " + animal_choice + " " + end_choice
+    return passwd
+
+def get_passwd(color, animal, end):
+    #how many passwords should be printed with each run of the program
+    #This number will not change the output number of the walkthrought function;
+    #that must be changed in the walkthrough function
+    print_range = 10
+    if "-n" in terminal_args:
+        for i in range(1, print_range):
+            passwd = make_passwd()
+            get_passwd_nums(passwd)
+            print()
+    elif "-s" in terminal_args:
+        for i in range(1, print_range):
+            passwd = make_passwd()
+            get_passwd_chars(passwd)
+            print()
+    elif "-d" in terminal_args:
+        for i in range(1, print_range):
+            passwd = make_passwd()
+            get_passwd_default(passwd)
+            print()
+    else:
+        #call on walkthrough function
+        walkthrough()
+        
+
+if "-h" in terminal_args:
+    help()
+else:
+    get_passwd(colors, animals, ends)
